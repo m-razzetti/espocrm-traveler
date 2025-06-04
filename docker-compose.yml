@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mariadb:10.5
+    container_name: traveler_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: travelercrm123
+      MYSQL_DATABASE: espocrm
+      MYSQL_USER: espocrm
+      MYSQL_PASSWORD: espocrm
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - traveler_net
+
+  traveler:
+    build: .
+    container_name: traveler_crm
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: espocrm
+      DB_USER: espocrm
+      DB_PASSWORD: espocrm
+    depends_on:
+      - db
+    networks:
+      - traveler_net
+
+volumes:
+  db_data:
+
+networks:
+  traveler_net:
